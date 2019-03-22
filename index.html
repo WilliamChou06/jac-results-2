@@ -14,7 +14,11 @@
       integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
       crossorigin="anonymous"
     />
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700" rel="stylesheet"> 
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="nouislider.css" />
     <link rel="stylesheet" href="style.css" />
     <title>Jac Resultados</title>
   </head>
@@ -22,29 +26,95 @@
     <h1>Resultados</h1>
 
     <div class="row">
-      <div class="col m3"></div>
-      <div class="col m9">
-        <div class="col m4">
+      <div class="col m4">
+        <div class="category-container">
+            <div class="col m3 filtro__vehicleCategory">
+                <label for="sedan">
+                  <input type="checkbox" name="sedan" id="sedan" />
+                  <span><i class="fas fa-car-side"></i></span>
+                  <span>SEDAN</span>
+                </label>
+              </div>
+              <div class="col m3 filtro__vehicleCategory">
+                <label for="suv">
+                  <input type="checkbox" name="suv" id="suv" />
+                  <span><i class="fas fa-truck-pickup"></i></span>
+                  <span>SUV</span>
+                </label>
+              </div>
+              <div class="col m3 filtro__vehicleCategory">
+                <label for="comercial">
+                  <input type="checkbox" name="comercial" id="comercial" />
+                  <span><i class="fas fa-shuttle-van"></i></span>
+                  <span>COMERCIAL</span>
+                </label>
+              </div>
+              <div class="col m3 filtro__vehicleCategory">
+                <label for="camioneta">
+                  <input type="checkbox" name="camioneta" id="camioneta" />
+                  <span><i class="fas fa-truck-pickup"></i></span>
+                  <span>CAMIONETA</span>
+                </label>
+              </div>
+        </div>
+        <div id="test-slider"></div>
+      </div>
+      <div id="resultsContainer" class="col m8"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+    <script src="nouislider.js"></script>
+    <script>
+      var slider = document.getElementById('test-slider');
+      noUiSlider.create(slider, {
+        start: [8000, 26000],
+        connect: true,
+        step: 1000,
+        orientation: 'horizontal', // 'horizontal' or 'vertical'
+        range: {
+          min: 8000,
+          max: 26000
+        },
+        format: wNumb({
+          decimals: 0
+        })
+      });
+
+      const resultsContainer = document.getElementById('resultsContainer');
+
+      // Add inside badge div
+      const promocionTemplate = `<img
+                  src="https://www.dercocenter.cl/wp-content/themes/dercocenter/img/logo-0km.png"
+                  alt=""
+                />`;
+
+      fetch(
+        'https://imcruzcenter.com.bo/rest/center.php?op=busqueda&marca=jac&campanha=no&tipo=0&modelo=0&min=0&max=0'
+      )
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+          data.forEach(car => {
+            car.value = numeral(car.value).format('0,0');
+            let carCard = `<div class="col m4">
           <div class="card">
             <div class="card-header">
               <div class="card-header__icon"><img src="https://imcruzcenter.com.bo/wp-content/themes/dercocenter/img/logo-color-suzuki.jpg" alt=""></div>
               <div class="card-header__text">
-                <h6>ALTO N800</h6>
-                <p>Alto NEW 0.8</p>
-                <p>DX 2019</p>
+                <h6>${car.modelo}</h6>
+                <p>${car.version}</p>
+                <p></p>
               </div>
             </div>
             <div class="card-image">
               <img
-                src="https://s3.amazonaws.com/dercocenter.cl/uploads/sites/5/2018/07/S5-id-235.jpg.png"
+                src="${car.imagen}"
               />
             </div>
             <div class="promo-badge">
               <span class="badge">
-                <img
-                  src="https://www.dercocenter.cl/wp-content/themes/dercocenter/img/logo-0km.png"
-                  alt=""
-                />
+                
               </span>
             </div>
             <div class="card-content">
@@ -52,16 +122,19 @@
                 <label>Imagen Referencial</label>
               </div>
               <p class="center-align listing-price">PRECIO DE LISTA</p>
-              <p class="center-align price">$60,000</p>
+              <p class="center-align price">$${car.value}</p>
               <div class="card-action">
-                <a class="waves-effect waves-light btn ">COTIZA AHORA</a>
+                <a class="waves-effect waves-light btn" href="${
+                  car.cotizacion
+                }" target="_blank">COTIZAR AHORA</a>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </div>`;
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+            resultsContainer.innerHTML += carCard;
+          });
+        });
+    </script>
   </body>
 </html>

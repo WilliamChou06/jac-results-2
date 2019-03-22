@@ -108,3 +108,22 @@
 .card {
   border-radius: 10px;
 }
+
+.filtro__vehicleCategory {
+  border: 1px solid #333;
+  padding: 10px !important;
+  background: #333;
+  margin: 6px;
+  text-align: center;
+  border-radius: 6px;
+  display: flex;
+}
+
+.filtro__vehicleCategory > label > span {
+  display: block;
+}
+
+.category-container {
+  display: flex;
+  padding-bottom: 60px;
+}
